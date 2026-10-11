@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.lodgebilling.controller.LodgeBillingController"
+            prefWidth="900.0" prefHeight="750.0" stylesheets="@style.css">
+
+    <top>
+        <VBox>
+            <!-- Application Header -->
+            <VBox styleClass="header-bar">
+                <Label text="Paradise Lodge Billing System" styleClass="header-title"/>
+            </VBox>
+
+            <!-- Toolbar -->
+            <HBox spacing="10" styleClass="toolbar">
+                <Button text="New Guest" onAction="#clearForm" styleClass="toolbar-btn" />
+                <Button text="View Receipt" styleClass="toolbar-btn" />
+                <Button text="Delete Selected Bill" onAction="#deleteSelectedBill" styleClass="toolbar-btn" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="25" style="-fx-padding: 25;">
+
+            <HBox spacing="25">
+                <!-- Left Form Card -->
+                <VBox styleClass="card" prefWidth="480" HBox.hgrow="ALWAYS" spacing="15">
+                    <Label text="Guest Registration" styleClass="card-title"/>
+                    <Separator />
+
+                    <GridPane hgap="15" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="120"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Guest name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="input-label"/>
+                        <TextField fx:id="guestNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Room type" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="input-label"/>
+                        <ComboBox fx:id="roomTypeCombo" prefWidth="180" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Nights" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="input-label"/>
+                        <TextField fx:id="nightsField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Extras (K)" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="input-label"/>
+                        <TextField fx:id="extrasField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Amount Paid (K)" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="input-label"/>
+                        <TextField fx:id="amountPaidField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                        <Label text="Notes" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.valignment="TOP" styleClass="input-label"/>
+                        <TextArea fx:id="notesArea" prefRowCount="3" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                        <HBox spacing="15" GridPane.rowIndex="6" GridPane.columnIndex="1" style="-fx-padding: 10 0 0 0;">
+                            <Button text="Calculate" onAction="#calculateBill" styleClass="btn-secondary"/>
+                            <Button text="Save Bill" onAction="#saveBill" styleClass="btn-primary"/>
+                        </HBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- Right Information Card -->
+                <VBox spacing="20">
+                    <VBox styleClass="card" prefWidth="320" spacing="12">
+                        <Label text="Practice Room Prices" styleClass="card-title"/>
+                        <Separator />
+                        <GridPane hgap="10" vgap="8">
+                            <Label text="Standard:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="input-label"/>
+                            <Label text="K 350.00 / night" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="info-text"/>
+
+                            <Label text="Deluxe:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="input-label"/>
+                            <Label text="K 550.00 / night" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="info-text"/>
+
+                            <Label text="Family:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="input-label"/>
+                            <Label text="K 750.00 / night" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="info-text"/>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox styleClass="card" prefWidth="320" spacing="10">
+                        <Label text="Business Rules" styleClass="card-title"/>
+                        <Separator />
+                        <Label text="• 5 nights or more: 5% off room charge." wrapText="true" styleClass="info-text"/>
+                        <Label text="• Extras get no discount. No tax." wrapText="true" styleClass="info-text"/>
+                        <Label text="• Saved bills last only until app closes." wrapText="true" styleClass="info-text"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- Bottom Table Section (Also in a card) -->
+            <VBox styleClass="card" spacing="10" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Saved Bills" styleClass="card-title"/>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="statusLabel" textFill="#2C3E50" style="-fx-font-weight: bold;"/>
+                </HBox>
+                <TableView fx:id="billsTable" prefHeight="200" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colBillId" text="Bill ID" prefWidth="70"/>
+                        <TableColumn fx:id="colGuest" text="Guest Name" prefWidth="170"/>
+                        <TableColumn fx:id="colRoom" text="Room" prefWidth="100"/>
+                        <TableColumn fx:id="colNights" text="Nights" prefWidth="70"/>
+                        <TableColumn fx:id="colTotal" text="Total (K)" prefWidth="120"/>
+                        <TableColumn fx:id="colPaid" text="Paid (K)" prefWidth="120"/>
+                        <TableColumn fx:id="colBalance" text="Balance (K)" prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

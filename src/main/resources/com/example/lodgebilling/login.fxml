@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.lodgebilling.controller.LoginController"
+            stylesheets="@style.css" prefWidth="450.0" prefHeight="550.0">
+
+    <center>
+        <!-- The background relies on the .root class from your style.css -->
+        <VBox alignment="CENTER" styleClass="root">
+
+            <!-- Login Card -->
+            <VBox styleClass="card" maxWidth="350" spacing="0" style="-fx-padding: 0; -fx-background-radius: 8px;">
+
+                <!-- Red Header area inside the login card -->
+                <VBox alignment="CENTER" style="-fx-background-color: #D32F2F; -fx-padding: 25px; -fx-background-radius: 8px 8px 0 0;">
+                    <Label text="PARADISE LODGE" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: black;"/>
+                    <Label text="Admin" style="-fx-font-size: 13px; -fx-text-fill: black;"/>
+                </VBox>
+
+                <!-- Form Content -->
+                <VBox spacing="20" style="-fx-padding: 30px;">
+                    <VBox spacing="8">
+                        <Label text="Username" styleClass="input-label" style="-fx-text-fill: black;"/>
+                        <TextField fx:id="usernameField" promptText="Enter username" styleClass="text-field"/>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label text="Password" styleClass="input-label" style="-fx-text-fill: black;"/>
+                        <PasswordField fx:id="passwordField" promptText="Enter password" styleClass="text-field"/>
+                    </VBox>
+
+                    <Label fx:id="errorLabel" style="-fx-text-fill: #D32F2F; -fx-font-weight: bold;" wrapText="true"/>
+
+                    <!-- Using .btn-secondary from your CSS for the Black button -->
+                    <Button text="LOGIN" onAction="#handleLogin" maxWidth="Infinity" styleClass="btn-secondary" style="-fx-font-size: 14px; -fx-padding: 12px; -fx-margin-top: 10px;"/>
+                </VBox>
+
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
