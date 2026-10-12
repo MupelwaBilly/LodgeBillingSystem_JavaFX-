@@ -7,15 +7,22 @@
       fx:controller="com.example.lodgebilling.controller.LoginController"
       stylesheets="@style.css" prefWidth="850.0" prefHeight="550.0">
 
-    <!-- Left Branding Panel -->
-    <VBox alignment="CENTER" prefWidth="400" styleClass="login-left-pane" HBox.hgrow="ALWAYS">
-        <Label text="PARADISE" textFill="WHITE" style="-fx-font-size: 36px; -fx-font-weight: 900; -fx-letter-spacing: 2px;"/>
-        <Label text="LODGE &amp; RESORT" textFill="#FECACA" style="-fx-font-size: 18px; -fx-letter-spacing: 4px;"/>
-        <VBox alignment="CENTER" style="-fx-padding: 40 0 0 0;">
-            <Label text="ICT261 Lab System" textFill="WHITE" style="-fx-font-size: 14px; -fx-opacity: 0.8;"/>
-            <Label text="Mulungushi University" textFill="WHITE" style="-fx-font-size: 12px; -fx-opacity: 0.6;"/>
+    <!-- Left Branding Panel with Image Background -->
+    <StackPane prefWidth="400" styleClass="login-left-pane" HBox.hgrow="ALWAYS">
+
+        <!-- Dark translucent overlay so the text remains readable over the photo -->
+        <VBox styleClass="login-overlay" />
+
+        <!-- The Text -->
+        <VBox alignment="CENTER">
+            <Label text="PARADISE" textFill="WHITE" style="-fx-font-size: 36px; -fx-font-weight: 900; -fx-letter-spacing: 2px;"/>
+            <Label text="LODGE &amp; RESORT" textFill="#FECACA" style="-fx-font-size: 18px; -fx-letter-spacing: 4px;"/>
+            <VBox alignment="CENTER" style="-fx-padding: 40 0 0 0;">
+
+            </VBox>
         </VBox>
-    </VBox>
+
+    </StackPane>
 
     <!-- Right Login Panel (Dark Mode) -->
     <VBox alignment="CENTER" prefWidth="450" styleClass="login-right-pane" spacing="25" style="-fx-padding: 50;">

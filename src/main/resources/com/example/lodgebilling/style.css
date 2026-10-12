@@ -6,8 +6,17 @@
 
 /* --- Premium Login Split Screen --- */
 .login-left-pane {
-    -fx-background-color: linear-gradient(to bottom right, #991B1B, #DC2626);
+    /* Because style.css and the images folder are next to each other, this path works perfectly */
+    -fx-background-image: url("images/login-bg.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
 }
+
+.login-overlay {
+    /* This creates a 60% dark tint over the image so your white text pops */
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+}
+
 .login-right-pane {
     -fx-background-color: #1E293B; /* Sleek Dark Gray */
 }
