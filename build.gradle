@@ -1,27 +1,30 @@
-
 plugins {
+    id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.openjfx.javafxplugin' version '0.0.14' // Updated plugin for better Java 21 support
 }
 
-group = 'com.example'
-version = '1.0'
+group 'com.example'
+version '1.0-SNAPSHOT'
 
+// Explicitly tell Gradle to compile using Java 21
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 javafx {
-    version = '21.0.7'
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    version = '21' // Upgraded JavaFX to match your JDK 21
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
+dependencies {
+    // SQLite for the database
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+}
 application {
     mainModule = 'com.example.lodgebilling'
     mainClass = 'com.example.lodgebilling.Main'

@@ -3,42 +3,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.lodgebilling.controller.LoginController"
-            stylesheets="@style.css" prefWidth="450.0" prefHeight="550.0">
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.lodgebilling.controller.LoginController"
+      stylesheets="@style.css" prefWidth="850.0" prefHeight="550.0">
 
-    <center>
-        <!-- The background relies on the .root class from your style.css -->
-        <VBox alignment="CENTER" styleClass="root">
+    <!-- Left Branding Panel -->
+    <VBox alignment="CENTER" prefWidth="400" styleClass="login-left-pane" HBox.hgrow="ALWAYS">
+        <Label text="PARADISE" textFill="WHITE" style="-fx-font-size: 36px; -fx-font-weight: 900; -fx-letter-spacing: 2px;"/>
+        <Label text="LODGE &amp; RESORT" textFill="#FECACA" style="-fx-font-size: 18px; -fx-letter-spacing: 4px;"/>
+        <VBox alignment="CENTER" style="-fx-padding: 40 0 0 0;">
+            <Label text="ICT261 Lab System" textFill="WHITE" style="-fx-font-size: 14px; -fx-opacity: 0.8;"/>
+            <Label text="Mulungushi University" textFill="WHITE" style="-fx-font-size: 12px; -fx-opacity: 0.6;"/>
+        </VBox>
+    </VBox>
 
-            <!-- Login Card -->
-            <VBox styleClass="card" maxWidth="350" spacing="0" style="-fx-padding: 0; -fx-background-radius: 8px;">
+    <!-- Right Login Panel (Dark Mode) -->
+    <VBox alignment="CENTER" prefWidth="450" styleClass="login-right-pane" spacing="25" style="-fx-padding: 50;">
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label fx:id="headerTitle" text="Welcome Back" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #F8FAFC;"/>
+            <Label fx:id="headerSubtitle" text="Please enter your details to sign in." style="-fx-text-fill: #94A3B8;"/>
+        </VBox>
 
-                <!-- Red Header area inside the login card -->
-                <VBox alignment="CENTER" style="-fx-background-color: #D32F2F; -fx-padding: 25px; -fx-background-radius: 8px 8px 0 0;">
-                    <Label text="PARADISE LODGE" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: black;"/>
-                    <Label text="Admin" style="-fx-font-size: 13px; -fx-text-fill: black;"/>
-                </VBox>
+        <VBox spacing="15">
+            <VBox spacing="5">
+                <Label text="USERNAME" styleClass="input-label"/>
+                <TextField fx:id="usernameField" promptText="admin" styleClass="text-field"/>
+            </VBox>
 
-                <!-- Form Content -->
-                <VBox spacing="20" style="-fx-padding: 30px;">
-                    <VBox spacing="8">
-                        <Label text="Username" styleClass="input-label" style="-fx-text-fill: black;"/>
-                        <TextField fx:id="usernameField" promptText="Enter username" styleClass="text-field"/>
-                    </VBox>
-
-                    <VBox spacing="8">
-                        <Label text="Password" styleClass="input-label" style="-fx-text-fill: black;"/>
-                        <PasswordField fx:id="passwordField" promptText="Enter password" styleClass="text-field"/>
-                    </VBox>
-
-                    <Label fx:id="errorLabel" style="-fx-text-fill: #D32F2F; -fx-font-weight: bold;" wrapText="true"/>
-
-                    <!-- Using .btn-secondary from your CSS for the Black button -->
-                    <Button text="LOGIN" onAction="#handleLogin" maxWidth="Infinity" styleClass="btn-secondary" style="-fx-font-size: 14px; -fx-padding: 12px; -fx-margin-top: 10px;"/>
-                </VBox>
-
+            <VBox spacing="5">
+                <Label text="PASSWORD" styleClass="input-label"/>
+                <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="text-field"/>
             </VBox>
         </VBox>
-    </center>
-</BorderPane>
+
+        <Label fx:id="errorLabel" wrapText="true" style="-fx-font-size: 13px;"/>
+
+        <VBox spacing="15" alignment="CENTER">
+            <Button fx:id="actionButton" text="Sign In" onAction="#handlePrimaryAction" maxWidth="Infinity" styleClass="btn-primary"/>
+            <Hyperlink fx:id="toggleLink" text="Create a new account" onAction="#toggleMode" style="-fx-text-fill: #94A3B8; -fx-underline: true;"/>
+        </VBox>
+    </VBox>
+</HBox>

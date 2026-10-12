@@ -1,42 +1,41 @@
 package com.example.lodgebilling.controller;
 
+import com.example.lodgebilling.database.DatabaseManager;
 import com.example.lodgebilling.model.Bill;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+import java.io.InputStream;
+import java.sql.SQLException;
 
 public class LodgeBillingController {
 
-    @FXML private TextField guestNameField;
+    @FXML private TextField guestNameField, nightsField, extrasField, amountPaidField;
     @FXML private ComboBox<String> roomTypeCombo;
-    @FXML private TextField nightsField;
-    @FXML private TextField extrasField;
-    @FXML private TextField amountPaidField;
-    @FXML private TextArea notesArea;
     @FXML private Label statusLabel;
-
+    @FXML private ImageView roomImageView;
     @FXML private TableView<Bill> billsTable;
-    @FXML private TableColumn<Bill, String> colBillId;
-    @FXML private TableColumn<Bill, String> colGuest;
-    @FXML private TableColumn<Bill, String> colRoom;
+    @FXML private TableColumn<Bill, String> colBillId, colGuest, colRoom, colTotal, colPaid, colBalance;
     @FXML private TableColumn<Bill, Integer> colNights;
-    @FXML private TableColumn<Bill, String> colTotal;
-    @FXML private TableColumn<Bill, String> colPaid;
-    @FXML private TableColumn<Bill, String> colBalance;
 
     private final ObservableList<Bill> savedBills = FXCollections.observableArrayList();
-    private int nextBillNumber = 1;
 
     @FXML
     public void initialize() {
-        // Initialize Room Types
         roomTypeCombo.setItems(FXCollections.observableArrayList("Standard", "Deluxe", "Family"));
         roomTypeCombo.getSelectionModel().selectFirst();
+        roomTypeCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> updateRoomImage(newVal));
 
-        // Setup Table Columns
         colBillId.setCellValueFactory(new PropertyValueFactory<>("billId"));
         colGuest.setCellValueFactory(new PropertyValueFactory<>("guestName"));
         colRoom.setCellValueFactory(new PropertyValueFactory<>("roomType"));
@@ -45,87 +44,82 @@ public class LodgeBillingController {
         colPaid.setCellValueFactory(new PropertyValueFactory<>("formattedPaid"));
         colBalance.setCellValueFactory(new PropertyValueFactory<>("formattedBalance"));
 
-        billsTable.setItems(savedBills);
+        loadBills();
+        updateRoomImage(roomTypeCombo.getValue());
     }
 
-    private double getRoomRate(String roomType) {
-        return switch (roomType) {
-            case "Standard" -> 350.00;
-            case "Deluxe" -> 550.00;
-            case "Family" -> 750.00;
-            default -> 0.0;
-        };
+    private void updateRoomImage(String room) {
+        if (room == null) return;
+        String path = "/com/example/lodgebilling/images/" + room.toLowerCase() + ".jpg";
+        InputStream stream = getClass().getResourceAsStream(path);
+        if (stream != null) roomImageView.setImage(new Image(stream));
+    }
+
+    private void loadBills() {
+        savedBills.setAll(DatabaseManager.getAllBills());
+        billsTable.setItems(savedBills);
     }
 
     @FXML
     public void calculateBill(ActionEvent event) {
         try {
-            Bill tempBill = createBillFromInput("TEMP");
-            statusLabel.setText(String.format("Calculated Total: K %.2f | Balance: K %.2f", tempBill.getTotal(), tempBill.getBalance()));
-        } catch (IllegalArgumentException e) {
-            statusLabel.setText("Error: " + e.getMessage());
-        }
+            Bill temp = createBill("TEMP");
+            showStatus(String.format("Calculated Total: K %.2f | Balance: K %.2f", temp.getTotal(), temp.getBalance()), "#2563EB");
+        } catch (Exception e) { showStatus(e.getMessage(), "#DC2626"); }
     }
 
     @FXML
     public void saveBill(ActionEvent event) {
         try {
-            String billId = String.format("B%03d", nextBillNumber);
-            Bill newBill = createBillFromInput(billId);
-
-            savedBills.add(newBill);
-            nextBillNumber++;
-
-            statusLabel.setText(String.format("Saved %s. Balance: K %.2f", billId, newBill.getBalance()));
-
-        } catch (IllegalArgumentException e) {
-            statusLabel.setText("Error: " + e.getMessage());
-        }
+            String newId = "B" + String.format("%03d", savedBills.size() + 1);
+            Bill bill = createBill(newId);
+            DatabaseManager.saveBill(bill);
+            loadBills();
+            showStatus("Saved " + newId + " successfully.", "#059669");
+            nightsField.clear(); extrasField.clear(); amountPaidField.clear();
+        } catch (Exception e) { showStatus("Error: " + e.getMessage(), "#DC2626"); }
     }
 
-    private Bill createBillFromInput(String billId) {
-        String guestName = guestNameField.getText().trim();
-        String roomType = roomTypeCombo.getValue();
+    private Bill createBill(String id) {
+        if (guestNameField.getText().trim().isEmpty() || nightsField.getText().trim().isEmpty())
+            throw new IllegalArgumentException("Guest name and nights required.");
 
-        if (guestName.isEmpty() || nightsField.getText().trim().isEmpty()) {
-            throw new IllegalArgumentException("Guest name and nights are required.");
-        }
+        int nights = Integer.parseInt(nightsField.getText().trim());
+        double extras = extrasField.getText().isEmpty() ? 0 : Double.parseDouble(extrasField.getText().trim());
+        double paid = amountPaidField.getText().isEmpty() ? 0 : Double.parseDouble(amountPaidField.getText().trim());
+        double rate = switch(roomTypeCombo.getValue()) { case "Standard"->350; case "Deluxe"->550; case "Family"->750; default->0; };
 
-        try {
-            int nights = Integer.parseInt(nightsField.getText().trim());
-            double extras = extrasField.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(extrasField.getText().trim());
-            double amountPaid = amountPaidField.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(amountPaidField.getText().trim());
-
-            if (nights <= 0) throw new IllegalArgumentException("Nights must be greater than 0.");
-            if (extras < 0 || amountPaid < 0) throw new IllegalArgumentException("Amounts cannot be negative.");
-
-            double rate = getRoomRate(roomType);
-            return new Bill(billId, guestName, roomType, nights, rate, extras, amountPaid);
-
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid numeric input for nights, extras, or paid amount.");
-        }
-    }
-
-    @FXML
-    public void clearForm(ActionEvent event) {
-        guestNameField.clear();
-        roomTypeCombo.getSelectionModel().selectFirst();
-        nightsField.clear();
-        extrasField.clear();
-        amountPaidField.clear();
-        notesArea.clear();
-        statusLabel.setText("");
+        return new Bill(id, guestNameField.getText().trim(), roomTypeCombo.getValue(), nights, rate, extras, paid);
     }
 
     @FXML
     public void deleteSelectedBill(ActionEvent event) {
         Bill selected = billsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            savedBills.remove(selected);
-            statusLabel.setText("Deleted bill: " + selected.getBillId());
-        } else {
-            statusLabel.setText("Please select a bill to delete.");
-        }
+            try {
+                DatabaseManager.deleteBill(selected.getBillId());
+                loadBills();
+                showStatus("Deleted " + selected.getBillId(), "#D97706");
+            } catch (SQLException e) { showStatus("DB Error.", "#DC2626"); }
+        } else showStatus("Select a bill to delete.", "#DC2626");
+    }
+
+    @FXML
+    public void clearForm() {
+        guestNameField.clear(); nightsField.clear(); extrasField.clear(); amountPaidField.clear();
+        roomTypeCombo.getSelectionModel().selectFirst();
+        statusLabel.setText("");
+    }
+
+    @FXML
+    public void logout(ActionEvent event) throws Exception {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(new FXMLLoader(getClass().getResource("/com/example/lodgebilling/login.fxml")).load(), 850, 550));
+        stage.centerOnScreen();
+    }
+
+    private void showStatus(String msg, String color) {
+        statusLabel.setStyle("-fx-text-fill: " + color + ";");
+        statusLabel.setText(msg);
     }
 }
