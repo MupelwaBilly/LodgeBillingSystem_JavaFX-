@@ -67,10 +67,18 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/lodgebilling/lodge-billing.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
             stage.setScene(new Scene(loader.load(), 1200, 800));
             stage.setTitle("Paradise Lodge - Dashboard");
+
+            // ADD THESE LINES:
+            stage.setResizable(true);
+            // stage.setMaximized(true); // Uncomment this line if you want it to open full-screen automatically
+
             stage.centerOnScreen();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showMsg(String msg, String color) {

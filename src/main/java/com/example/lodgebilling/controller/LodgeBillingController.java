@@ -50,9 +50,30 @@ public class LodgeBillingController {
 
     private void updateRoomImage(String room) {
         if (room == null) return;
-        String path = "/com/example/lodgebilling/images/" + room.toLowerCase() + ".jpg";
-        InputStream stream = getClass().getResourceAsStream(path);
-        if (stream != null) roomImageView.setImage(new Image(stream));
+
+        String fileName = room.toLowerCase() + ".jpg";
+        String imagePath = "/com/example/lodgebilling/images/" + fileName;
+
+        try {
+            // Using java.net.URL is the most bulletproof way in Java 21
+            java.net.URL resourceUrl = getClass().getResource(imagePath);
+
+            if (resourceUrl != null) {
+                roomImageView.setImage(new Image(resourceUrl.toExternalForm()));
+            } else {
+                // Fallback: Check if they were accidentally placed in the root resources folder
+                java.net.URL rootUrl = getClass().getResource("/" + fileName);
+                if (rootUrl != null) {
+                    roomImageView.setImage(new Image(rootUrl.toExternalForm()));
+                } else {
+                    System.out.println(" ERROR: Java cannot find " + fileName);
+                    System.out.println("Please make sure the photo is placed exactly here:");
+                    System.out.println("src/main/resources/com/example/lodgebilling/images/" + fileName);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(" ERROR loading photo: " + e.getMessage());
+        }
     }
 
     private void loadBills() {

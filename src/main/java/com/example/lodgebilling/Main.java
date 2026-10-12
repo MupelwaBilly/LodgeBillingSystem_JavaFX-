@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class Main extends Application {
     @Override
@@ -16,8 +15,11 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 850, 550);
 
         stage.setTitle("Paradise Lodge - Authentication");
+
+        // CHANGE THIS LINE TO TRUE
+        stage.setResizable(true);
+
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
     }
 
